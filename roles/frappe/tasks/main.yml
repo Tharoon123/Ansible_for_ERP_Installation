@@ -1,0 +1,26 @@
+- name: Change user directory permission
+  file:
+    path: /home/frappe
+    mode: "0755"
+    recurse: yes
+
+- name: Create ERPNext site
+  become: yes
+  become_user: frappe
+  vars:
+    ansible_become_allow_same_user: true
+  shell: |
+    cd ~/frappe-bench
+    bench new-site erp.pnpoutlook.com
+    bench get-app erpnext --branch version-15
+    bench get-app payments
+    bench --site erp.pnpoutlook.com install-app erpnext
+    bench --site erp.pnpoutlook.com install-app payments
+
+- name: Setup production
+  become_user: frappe
+  shell: |
+    cd ~/frappe-bench
+    bench --site erp.pnpoutlook.com enable-scheduler
+    bench --site erp.pnpoutlook.com set-maintenance-mode off 
+    sudo bench setup production frappe

@@ -1,0 +1,37 @@
+
+- name: Install MySQL client build dependencies
+  apt:
+    name:
+      - libmysqlclient-dev
+      - python3-dev
+      - build-essential
+      - pkg-config
+    state: present
+    update_cache: yes
+  become: yes
+
+- name: Install PyMySQL
+  pip:
+    name: PyMySQL
+    executable: pip3
+    state: present
+  become: yes
+
+- name: Ensure MySQL root user has password
+  community.mysql.mysql_user:
+    name: root
+    login_user: root
+    login_password: "frappe"
+    password: "{{ mysql_root_password }}"
+    host_all: true
+    check_implicit_admin: true
+    priv: "*.*:ALL,GRANT"
+    state: present
+
+- name: Remove anonymous MySQL users 
+  community.mysql.mysql_user: 
+    name: '' 
+    host_all: yes 
+    state: absent 
+    login_user: root 
+    login_password: "{{mysql_root_password}}"

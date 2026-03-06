@@ -1,0 +1,41 @@
+- name: Create ERP directory
+  file:
+    path: "{{ erp_mount_path }}"
+    state: directory
+    mode: "0755"
+
+- name: Create frappe user
+  user:
+    name: frappe
+    home: "{{ erp_mount_path }}"
+    shell: /bin/bash
+    create_home: yes
+    groups: sudo
+    append: yes
+    password: "{{ frappe_password }}"
+
+- name: Mount disk to ERP directory
+  mount:
+    path: "{{ erp_mount_path }}"
+    src: "{{ erp_mount_device }}"
+    fstype: ext4
+    state: mounted
+
+
+- name: Remove all old NodeJS related packages
+  apt:
+    name:
+      - nodejs
+      - npm
+      - libnode-dev
+      - libnode72
+    update_cache: yes  
+    state: absent
+    purge: yes
+- name: Cleanup unused packages
+  apt:
+    autoremove: yes
+
+- name: Update apt cache
+  apt:
+    update_cache: yes

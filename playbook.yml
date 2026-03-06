@@ -1,0 +1,14 @@
+- name: Setup ERPNext 15 on EC2
+  hosts: pnp_server
+  become: true
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  roles:
+    - frappe_user
+    - dependencies
+    - bashrc
+    # - mysql_secure_installation
+    # - nodejs
+    # - mariadb
+    # - bench
+    - frappe

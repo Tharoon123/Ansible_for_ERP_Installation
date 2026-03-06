@@ -1,0 +1,22 @@
+- name: Initialize bench
+  pip:
+    name: frappe-bench
+    executable: pip3
+
+- name: Set frappe ownership
+  file:
+    path: "{{ erp_mount_path }}"
+    owner: frappe
+    group: frappe
+    recurse: yes
+
+- name: Initialize bench directory
+  shell: |
+    su - frappe -c "bench init frappe-bench --frappe-branch version-15"
+  args:
+    creates: /ERP-System/frappe-bench
+
+- name: Wait for server to reconnect
+  wait_for_connection:
+    delay: 5
+    timeout: 300

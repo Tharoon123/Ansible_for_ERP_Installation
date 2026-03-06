@@ -1,0 +1,4 @@
+mysql_root_password: "frappe"
+frappe_password: "frappe"
+erp_mount_device: "/dev/nvme1n1p1"
+erp_mount_path: "/ERP-System"

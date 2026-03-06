@@ -1,0 +1,28 @@
+- name: Ensure .bashrc exists
+  become: yes
+  become_user: frappe
+  file:
+    path: /ERP-System/.bashrc
+    state: touch
+    mode: "0644"
+
+- name: Add NVM configuration block to bashrc
+  become: yes
+  become_user: frappe
+  blockinfile:
+    path: /ERP-System/.bashrc
+    marker: "# {mark} ANSIBLE MANAGED NVM BLOCK"
+    block: |
+      export NVM_DIR="$HOME/.nvm"
+      [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+      alias ll='ls -alF'
+      alias ls='ls --color=auto'
+      [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+
+
+- name: Reload bashrc
+  become: yes
+  become_user: frappe
+  shell: source /ERP-System/.bashrc
+  args:
+    executable: /bin/bash
